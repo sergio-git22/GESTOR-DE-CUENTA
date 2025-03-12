@@ -6,17 +6,19 @@
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com/"></script>
   </head>
-  <body class="flex items-center justify-center bg-slate-200 min-h-screen">
+  <body
+    class="flex items-center justify-center bg-slate-200 min-h-screen font-mono"
+  >
     <!-- CAJA DE CAMPOS -->
     <div
-      class="bg-white w-full h-96 max-w-lg p-8 rounded-md shadow-md shadow-slate-400"
+      class="bg-black w-full h-96 max-w-lg p-8 rounded-md shadow-lg shadow-pink-500"
     >
-      <h1 class="text-center text-3xl font-bold text-blue-900 underline">
-        Tu cuenta
+      <h1 class="text-center text-3xl font-bold text-pink-500 underline">
+        LOGIN
       </h1>
       <!-- CAJA DE EMAIL -->
       <div id="emailBox" class="mt-5 grid">
-        <label for="email" class="font-semibold text-lg text-slate-800"
+        <label for="email" class="font-semibold text-md text-white"
           >Correo electrónico</label
         >
         <input
@@ -30,27 +32,55 @@
       </div>
       <!-- CAJA DE CONTRASEÑA -->
       <div id="passwordBox" class="mt-5 grid">
-        <label for="password" class="font-semibold text-lg text-slate-800"
+        <label for="password" class="font-semibold text-md text-white"
           >Contraseña</label
         >
         <input
           type="password"
           id="password"
           name="password"
-          placeholder="***********"
+          placeholder="*************"
           required
           class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
         />
+        <div id="showPassBox" class="flex mt-1">
+          <input type="checkbox" name="checkbox" id="checkbox" />
+          <label for="checkbox" class="ml-2 text-xs text-white"
+            >Mostrar contraseña</label
+          >
+        </div>
       </div>
       <!-- "FOOTER" -->
       <div id="finalBox" class="mt-5 grid">
         <button
           id="btnInicio"
-          class="w-full h-10 bg-blue-900 text-center text-white text-lg font-bold rounded-md hover:bg-blue-700"
+          class="w-full h-10 bg-pink-500 text-center text-lg font-bold rounded-md hover:bg-white"
         >
           Iniciar sesión
         </button>
+        <a
+          href="register.html"
+          class="mt-3 text-center text-sm underline text-white hover:text-pink-500"
+          >¿No tienes una cuenta? Pincha aquí para registrarte</a
+        >
       </div>
     </div>
+
+    <!-- MOSTRAR LA CONTRASEÑA -->
+    <script>
+      let password = document.getElementById("password");
+      let viewPassword = document.getElementById("checkbox");
+      let click = false;
+
+      viewPassword.addEventListener("click", (i) => {
+        if (!click) {
+          password.type = "text";
+          click = true;
+        } else if (click) {
+          password.type = "password";
+          click = false;
+        }
+      });
+    </script>
   </body>
 </html>
