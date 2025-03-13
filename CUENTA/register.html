@@ -6,13 +6,102 @@
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com/"></script>
   </head>
-  <body class="flex items-center justify-center bg-slate-200 min-h-screen">
-    <form id="registerForm">
-      <fieldset class="">
-        <legend>DATOS DE TU CUENTA</legend>
-        <label for="name">Nombre completo</label>
-        <input type="name" name="name" />
-      </fieldset>
+  <body
+    class="flex items-center justify-center bg-slate-200 min-h-screen font-mono"
+  >
+    <form>
+      <div
+        id="registerBox"
+        class="bg-black w-full h-full max-w-lg p-8 rounded-md shadow-[5px_5px_5px] shadow-pink-500"
+      >
+        <h1 class="text-center text-3xl font-bold text-pink-500 underline">
+          DATOS DE TU CUENTA
+        </h1>
+        <!-- NOMBRE -->
+        <div id="nameBox" class="grid mt-5">
+          <label for="name" class="font-semibold text-md text-white"
+            >Nombre completo</label
+          >
+          <input
+            type="name"
+            id="name"
+            name="name"
+            class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
+            autocomplete="off"
+            required
+          />
+        </div>
+        <!-- USERNAME -->
+        <div id="userBox" class="grid mt-5">
+          <label for="name" class="font-semibold text-md text-white"
+            >Usuario</label
+          >
+          <input
+            type="name"
+            id="userName"
+            name="userName"
+            class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
+            autocomplete="off"
+            required
+          />
+        </div>
+        <!-- EMAIL -->
+        <div id="emailBox" class="grid mt-5">
+          <label for="email" class="font-semibold text-md text-white"
+            >Correo electrónico</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Ejemplo: micuenta@gmail.com"
+            required
+            autocomplete="off"
+            class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
+          />
+        </div>
+        <!-- CONTRASEÑA -->
+        <div id="passwordBox" class="grid mt-5">
+          <label for="password" class="font-semibold text-md text-white"
+            >Contraseña</label
+          >
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="*************"
+            required
+            class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
+          />
+          <label for="password" class="font-semibold text-md text-white"
+            >Repite tu contraseña</label
+          >
+          <input
+            type="password"
+            id="password2"
+            name="password2"
+            placeholder="*************"
+            required
+            class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
+          />
+          <div id="showPassBox" class="flex mt-1 items-center">
+            <button
+              id="btnPass"
+              class="bg-slate-200 p-1.5 rounded-3xl mt-2 hover:bg-pink-500"
+              onclick="toggleHover()"
+            ></button>
+            <p class="text-white text-xs mt-2 ml-2">Mostrar contraseña</p>
+          </div>
+        </div>
+        <!-- FOTO DE PERFIL -->
+        <div id="imgBox" class="grid mt-5">
+          <label for="file" class="font-semibold text-md text-white"
+            >Elige tu foto de perfil</label
+          >
+          <input type="file" id="image" name="image" class="p-2 w-full h-10 mt-1
+          rounded-md border-2 border-opacity-50 border-black" required
+        </div>
+      </div>
     </form>
   </body>
 </html>
