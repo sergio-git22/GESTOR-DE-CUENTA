@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com/"></script>
   </head>
   <body
-    class="flex items-center justify-center bg-slate-200 min-h-screen font-mono"
+    class="flex items-center justify-center min-h-screen bg-slate-200 font-mono"
   >
     <form>
       <div
@@ -73,6 +73,9 @@
             required
             class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
           />
+          <div id="passwordNot" class="hidden p-1 text-white text-xs mt-1">
+            ⚠️¡Las contraseñas no coinciden!
+          </div>
           <label for="password" class="font-semibold text-md text-white"
             >Repite tu contraseña</label
           >
@@ -84,6 +87,9 @@
             required
             class="p-2 w-full h-10 mt-1 rounded-md border-2 border-opacity-50 border-black"
           />
+          <div id="passwordNot" class="hidden p-1 text-white text-xs mt-1">
+            ⚠️¡Las contraseñas no coinciden!
+          </div>
           <div id="showPassBox" class="flex mt-1 items-center">
             <button
               id="btnPass"
@@ -98,10 +104,103 @@
           <label for="file" class="font-semibold text-md text-white"
             >Elige tu foto de perfil</label
           >
-          <input type="file" id="image" name="image" class="p-2 w-full h-10 mt-1
-          rounded-md border-2 border-opacity-50 border-black" required
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            required
+            class="p-1 w-full h-10 text-sm font-bold"
+          />
+          <button
+            id="cambiarFoto"
+            type="button"
+            class="hidden w-40 h-6 ml-1 text-sm font-bold rounded-sm bg-slate-200 hover:bg-pink-500"
+          >
+            Cambiar imagen
+          </button>
+        </div>
+        <!-- AQUÍ SE MOSTRARÁ LA IMAGEN SELECCIONADA -->
+        <div id="previewContainer" class="mt-2"></div>
+        <!-- "FOOTER" -->
+        <div id="finalBox" class="grid mt-5">
+          <button
+            id="btnRegistro"
+            class="w-full h-10 bg-pink-500 text-center text-lg font-bold rounded-md hover:bg-white"
+          >
+            Registrarse
+          </button>
+          <a
+            href="index.html"
+            target="_self"
+            class="mt-3 text-center text-sm underline text-white hover:text-pink-500"
+            >¿Ya tienes una cuenta? Pincha aquí para iniciar sesión</a
+          >
         </div>
       </div>
     </form>
+
+    <script>
+      // MOSTRAR LA CONTRASEÑA
+      let password = document.getElementById("password");
+      let password2 = document.getElementById("password2");
+      let viewPassword = document.getElementById("btnPass");
+      let click = false;
+
+      viewPassword.addEventListener("click", (i) => {
+        if (!click) {
+          password.type = "text";
+          password2.type = "text";
+          click = true;
+        } else if (click) {
+          password.type = "password";
+          password2.type = "password";
+          click = false;
+        }
+      });
+
+      function toggleHover() {
+        event.preventDefault();
+        viewPassword.classList.toggle("bg-pink-500");
+      }
+
+      // Obtenemos el input de archivo y el contenedor de vista previa
+      const fileInput = document.getElementById("image");
+      const previewContainer = document.getElementById("previewContainer");
+      const btnCambiarFoto = document.getElementById("cambiarFoto");
+
+      // Cambiamos el archivo a imagen
+      fileInput.addEventListener("change", function (event) {
+        const file = event.target.files[0]; // Obtenemos el archivo seleccionado
+        if (file) {
+          const reader = new FileReader(); // Creamos un lector de archivos
+
+          // Configuramos la acción que ocurre cuando el archivo es cargado
+          reader.onload = function (e) {
+            const img = document.createElement("img"); // Creamos un elemento de imagen
+            img.src = e.target.result; // Asignamos la fuente de la imagen
+            img.classList.add("rounded-md"); // Agregamos estilo a la imagen
+            img.style.maxWidth = "100%"; // Limitamos el tamaño máximo de la imagen
+            img.style.height = "auto"; // Ajustamos la altura de la imagen
+
+            // Limpiamos el contenedor de vista previa antes de añadir la nueva imagen
+            previewContainer.innerHTML = "";
+            previewContainer.appendChild(img); // Añadimos la imagen al contenedor
+
+            // MOSTRAR EL BOTÓN DE CAMBIAR FOTO
+            btnCambiarFoto.classList.remove("hidden");
+            btnCambiarFoto.innerText = "Cambiar imagen"; // Cambiar el texto del botón
+          };
+
+          // Leemos el archivo como una URL de datos (base64)
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // ACCIÓN PARA EL BOTÓN DE CAMBIAR FOTO
+      btnCambiarFoto.addEventListener("click", function () {
+        fileInput.click();
+      });
+    </script>
   </body>
 </html>
