@@ -11,12 +11,15 @@ const alertPass = document.getElementById("passwordNot");
 const btnRegistro = document.getElementById("btnRegistro");
 if (btnRegistro) {
   btnRegistro.addEventListener("click", register);
-  if (password.value !== password2.value) {
-    alertPass.classList.remove("hidden");
-  }
 }
 
 async function register() {
+  // Validar si las contraseñas coinciden
+  if (password.value !== password2.value) {
+    alertPass.classList.remove("hidden");
+    return;
+  }
+
   const requestOptions = {
     method: "POST",
     headers: {
