@@ -115,7 +115,7 @@
           <button
             id="cambiarFoto"
             type="button"
-            class="hidden w-40 h-6 ml-1 text-sm font-bold rounded-sm bg-slate-200 hover:bg-pink-500"
+            class="hidden w-40 h-6 mt-1 ml-1 text-sm font-bold rounded-sm bg-slate-200 hover:bg-pink-500"
           >
             Cambiar imagen
           </button>
@@ -145,6 +145,7 @@
       let password = document.getElementById("password");
       let password2 = document.getElementById("password2");
       let viewPassword = document.getElementById("btnPass");
+      let image = document.getElementById("image");
       let click = false;
 
       viewPassword.addEventListener("click", (i) => {
@@ -188,8 +189,8 @@
             previewContainer.appendChild(img); // Añadimos la imagen al contenedor
 
             // MOSTRAR EL BOTÓN DE CAMBIAR FOTO
+            image.classList.add("hidden");
             btnCambiarFoto.classList.remove("hidden");
-            btnCambiarFoto.innerText = "Cambiar imagen"; // Cambiar el texto del botón
           };
 
           // Leemos el archivo como una URL de datos (base64)
@@ -202,5 +203,7 @@
         fileInput.click();
       });
     </script>
+
+    <script type="module" src="auth.js"></script>
   </body>
 </html>
