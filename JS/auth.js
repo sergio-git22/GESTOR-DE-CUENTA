@@ -5,6 +5,7 @@ const userName = document.getElementById("userName");
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const password2 = document.getElementById("password2");
+const image = document.getElementById("image");
 const alertPass = document.getElementById("passwordNot");
 
 // REGISTRARSE
@@ -31,6 +32,7 @@ async function register() {
       userName: userName.value,
       email: email.value,
       password: password.value,
+      image: image.value,
     }),
   };
 
@@ -46,7 +48,6 @@ async function register() {
 
   window.location.href = "/dashboard.html";
 }
-
 // LOGIN
 const btnLogin = document.getElementById("btnInicio");
 if (btnLogin) {
@@ -88,6 +89,13 @@ if (btnLogout) {
   btnLogout.addEventListener("click", logout);
 }
 
+export function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user_id");
+
+  window.location.href = "/index.html";
+}
+
 // COMPROBAR SI EL USUARIO ESTÁ REGISTRADO
 export async function isUserLogged(access_token, user_id) {
   const requestOptions = {
@@ -112,13 +120,6 @@ export async function isUserLogged(access_token, user_id) {
   }
 
   return false;
-}
-
-export function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user_id");
-
-  window.location.href = "/index.html";
 }
 
 // OBTENER EL TOKEN DE ACCESO
