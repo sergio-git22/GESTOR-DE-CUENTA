@@ -44,7 +44,7 @@ async function register() {
   const result = await response.json();
 
   localStorage.setItem("token", result.access_token);
-  localStorage.setItem("user_id", result.user.id);
+  localStorage.setItem("user_id", result.user_id);
 
   window.location.href = "/dashboard.html";
 }
