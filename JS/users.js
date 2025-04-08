@@ -1,5 +1,5 @@
-import { APIKEY, BASE_URL } from "config.js";
-import { logout, getToken } from "auth.js";
+import { APIKEY, BASE_URL } from "./config.js";
+import { logout, getToken } from "./auth.js";
 
 const perfil = document.getElementById("perfil");
 const currentUserId = localStorage.getItem("user_id");
@@ -29,15 +29,22 @@ async function getUsers() {
 
 // OBTENER INFO DEL USUARIO
 async function getInfoUser(currentUserId) {
+  if (!currentUserId) {
+    console.error("El user_id no se ha encontrado en localStorage");
+    return null;
+  }
+
+  console.log("currentUserId:", currentUserId);
+
   try {
     const response = await fetch(
-      `${BASE_URL}/rest/v1/Users?user_id=eq.${user_id}`,
+      `${BASE_URL}/rest/v1/Users?user_id=eq.${currentUserId}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           apikey: APIKEY,
-          Authorization: `Bearer ${APIKEY}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       }
     );
@@ -66,7 +73,14 @@ async function printUser() {
 
   perfil.innerHTML = `
   <h1>Mi perfil</h1>
-  <p>Nombre y apellidos:${user_name} || "Desconocido"</p>`;
+  <p><strong>Nombre y apellidos:</strong>${userInfo.name || "Desconocido"}</p>
+  <p><strong>Usuario:</strong>${userInfo.userName || "Desconocido"}</p>
+  <p><strong>Correo electrónico:</strong>${
+    userInfo.email || "Email no encontrado"
+  }</p>
+  <p><strong>Tu foto de perfil:</strong>${
+    userInfo.image || "Formato de imagen no admitido"
+  }</p>`;
 }
 
 getUsers();
