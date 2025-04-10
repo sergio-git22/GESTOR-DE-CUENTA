@@ -25,14 +25,19 @@ async function register() {
     method: "POST",
     headers: {
       apikey: APIKEY,
-      "Content-Type": "application.json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: name.value,
-      userName: userName.value,
       email: email.value,
       password: password.value,
-      image: image.value,
+      password2: password2.value,
+      optins: {
+        data: {
+          name: name.value,
+          userName: userName.value,
+          image: image.value,
+        },
+      },
     }),
   };
 
@@ -46,8 +51,11 @@ async function register() {
   localStorage.setItem("token", result.access_token);
   localStorage.setItem("user_id", result.user_id);
 
+  saveUsers();
+
   window.location.href = "/dashboard.html";
 }
+
 // LOGIN
 const btnLogin = document.getElementById("btnInicio");
 if (btnLogin) {
@@ -59,7 +67,7 @@ async function login() {
     method: "POST",
     headers: {
       apikey: APIKEY,
-      "Content-Type": "application.json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       email: email.value,
@@ -73,6 +81,7 @@ async function login() {
   );
   if (!response.ok) {
     alert("Error al iniciar sesión");
+    return;
   }
 
   const result = await response.json();
@@ -125,4 +134,27 @@ export async function isUserLogged(access_token, user_id) {
 // OBTENER EL TOKEN DE ACCESO
 export function getToken() {
   return localStorage.getItem("token");
+}
+
+// GUARDAR USUARIOS EN SUPABASE
+async function saveUsers() {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      apikey: APIKEY,
+      Authorization: `Bearer${result.access_token}`,
+      "Content-Type": "application/json",
+    },
+  };
+  await fetch(`${BASE_URL}/rest/v1/Users`, requestOptions);
+
+  body: JSON.stringify({
+    user_id: result.user.id,
+    name: name.value,
+    userName: userName.value,
+    email: email.value,
+    password: password.value,
+    password2: password2.value,
+    image: image.value,
+  });
 }

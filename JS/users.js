@@ -4,83 +4,62 @@ import { logout, getToken } from "./auth.js";
 const perfil = document.getElementById("perfil");
 const currentUserId = localStorage.getItem("user_id");
 
-// OBTENER USUARIOS
-async function getUsers() {
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      apikey: APIKEY,
-      "Content-Type": "application/json",
-      Authorization: `Bearer${getToken()}`,
-    },
-  };
-
-  const response = await fetch(`${BASE_URL}/rest/v1/Users`, requestOptions);
-  if (!response.ok) {
-    alert("Error en la petición");
-    return false;
-  }
-
-  const result = await response.json();
-
-  console.log(result);
-  printUser(result);
-}
-
 // OBTENER INFO DEL USUARIO
-async function getInfoUser(currentUserId) {
-  if (!currentUserId) {
-    console.error("El user_id no se ha encontrado en localStorage");
-    return null;
-  }
-
-  console.log("currentUserId:", currentUserId);
-
+async function getInfoUser() {
   try {
-    const response = await fetch(
-      `${BASE_URL}/rest/v1/Users?user_id=eq.${currentUserId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: APIKEY,
-          Authorization: `Bearer ${getToken()}`,
-        },
-      }
+    const response = await fetch(`${BASE_URL}/auth/v1/user`, {
+      method: "GET",
+      headers: {
+        apikey: APIKEY,
+        "Content-Type": "application/json",
+        Authorization: `Bearer${result.acess_token}`,
+      },
+    });
+
+    if (!response.ok) {
+      alert("No se pudo obtener la información del usuario");
+      return;
+    }
+
+    const userData = await response.json();
+
+    // Guardamos los datos del usuario
+    localStorage.setItem(
+      "usuarioLogueado",
+      JSON.stringify({
+        name: userData.user_metadata.name,
+        userName: userData.user_metadata.userName,
+        email: userData.email,
+        image: userData.user_metadata.image,
+      })
     );
 
-    const data = await response.json();
-    return data.length > 0 ? data[0] : null;
+    window.location.href = "/dashboard.html";
   } catch (error) {
-    console.error("Error al obtener datos del usuario:", error);
+    console.error("No se pudo obtener información del usuario", error);
     return null;
   }
 }
 
-// PINTAR DATOS DE USUARIO
-async function printUser() {
-  if (!currentUserId) {
-    console.error("No hay usuario logueado");
-    return;
+// MOSTRAR INFO DEL USUARIO
+async function showInfoUser() {
+  const user = JSON.parse(localStorage.getItem("usuarioLogueado"));
+
+  if (user) {
+    const perfilDiv = document.getElementById("perfil");
+
+    perfilDiv.innerHTML = `
+    <h3 class="m-auto font-bold text-2xl mb-3 underline">MI PERFIL</h3>
+    <p><span class="font-bold">Nombre y apellidos:</span> ${user.name}</p>
+    <p><span class="font-bold">Usuario:</span> ${user.userName}</p>
+    <p><span class="font-bold">Correo electrónico:</span> ${user.email}</p>
+    <p><span class="font-bold">Tu foto de perfil:</span></p>
+    <img src="${user.image}" alt="Foto de perfil" class="w-32 h-32 rounded-full border-2 border-pink-500 mt-2" />
+  `;
+  } else {
+    alert("Error al mostrar la información del usuario");
   }
-
-  const userInfo = await getInfoUser(currentUserId);
-
-  if (!userInfo) {
-    console.error("No se pudo obtener la información del usuario");
-    return;
-  }
-
-  perfil.innerHTML = `
-  <h1>Mi perfil</h1>
-  <p><strong>Nombre y apellidos:</strong>${userInfo.name || "Desconocido"}</p>
-  <p><strong>Usuario:</strong>${userInfo.userName || "Desconocido"}</p>
-  <p><strong>Correo electrónico:</strong>${
-    userInfo.email || "Email no encontrado"
-  }</p>
-  <p><strong>Tu foto de perfil:</strong>${
-    userInfo.image || "Formato de imagen no admitido"
-  }</p>`;
 }
 
-getUsers();
+getInfoUser();
+showInfoUser();
