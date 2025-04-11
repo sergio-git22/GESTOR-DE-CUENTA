@@ -2,19 +2,23 @@ import { APIKEY, BASE_URL } from "./config.js";
 import { logout, getToken } from "./auth.js";
 
 const perfil = document.getElementById("perfil");
-const currentUserId = localStorage.getItem("user_id");
+// const currentUserId = localStorage.getItem("user_id");
 
 // OBTENER INFO DEL USUARIO
-async function getInfoUser() {
+async function getInfoUser(user_id) {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      apikey: APIKEY,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+  };
   try {
-    const response = await fetch(`${BASE_URL}/auth/v1/user`, {
-      method: "GET",
-      headers: {
-        apikey: APIKEY,
-        "Content-Type": "application/json",
-        Authorization: `Bearer${result.acess_token}`,
-      },
-    });
+    const response = await fetch(
+      `${BASE_URL}/rest/v1/Users?user_id=eq.${user_id}`,
+      requestOptions
+    );
 
     if (!response.ok) {
       alert("No se pudo obtener la información del usuario");
@@ -22,17 +26,6 @@ async function getInfoUser() {
     }
 
     const userData = await response.json();
-
-    // Guardamos los datos del usuario
-    localStorage.setItem(
-      "usuarioLogueado",
-      JSON.stringify({
-        name: userData.user_metadata.name,
-        userName: userData.user_metadata.userName,
-        email: userData.email,
-        image: userData.user_metadata.image,
-      })
-    );
 
     window.location.href = "/dashboard.html";
   } catch (error) {
@@ -43,7 +36,7 @@ async function getInfoUser() {
 
 // MOSTRAR INFO DEL USUARIO
 async function showInfoUser() {
-  const user = JSON.parse(localStorage.getItem("usuarioLogueado"));
+  const user = JSON.parse(localStorage.getItem("usuarioRegistrado"));
 
   if (user) {
     const perfilDiv = document.getElementById("perfil");
@@ -59,6 +52,12 @@ async function showInfoUser() {
   } else {
     alert("Error al mostrar la información del usuario");
   }
+}
+
+// CERRAR SESIÓN
+const btnLogout = document.getElementById("btnLogout");
+if (btnLogout) {
+  btnLogout.addEventListener("click", logout);
 }
 
 getInfoUser();

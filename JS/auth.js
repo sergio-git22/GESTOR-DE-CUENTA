@@ -51,6 +51,17 @@ async function register() {
   localStorage.setItem("token", result.access_token);
   localStorage.setItem("user_id", result.user_id);
 
+  // Guardamos los datos del usuario
+  localStorage.setItem(
+    "usuarioRegistrado",
+    JSON.stringify({
+      name: userData.user_metadata.name,
+      userName: userData.user_metadata.userName,
+      email: userData.email,
+      image: userData.user_metadata.image,
+    })
+  );
+
   saveUsers();
 
   window.location.href = "/dashboard.html";
