@@ -31,38 +31,70 @@ async function register() {
       email: email.value,
       password: password.value,
       password2: password2.value,
-      optins: {
-        data: {
-          name: name.value,
-          userName: userName.value,
-          image: image.value,
-        },
-      },
+      name: name.value,
+      userName: userName.value,
+      image: image.value,
     }),
   };
 
   const response = await fetch(`${BASE_URL}/auth/v1/signup`, requestOptions);
   if (!response.ok) {
     alert("Error en el registro");
+    return;
   }
 
   const result = await response.json();
+  const access_token = result.session?.access_token;
+  const user_id = result.user?.id;
 
-  localStorage.setItem("token", result.access_token);
-  localStorage.setItem("user_id", result.user_id);
+  if (!access_token || !user_id) {
+    alert("No se pudo obtener el token o el ID del usuario");
+    return;
+  }
 
-  // Guardamos los datos del usuario
-  localStorage.setItem(
-    "usuarioRegistrado",
-    JSON.stringify({
-      name: userData.user_metadata.name,
-      userName: userData.user_metadata.userName,
-      email: userData.email,
-      image: userData.user_metadata.image,
-    })
-  );
+  localStorage.setItem("token", access_token);
+  localStorage.setItem("user_id", user_id);
+  localStorage.setItem("usuarioRegistrado", JSON.stringify(userData));
 
-  saveUsers();
+  // Subimos la imagen al bucket de Supabase
+  const file = image.files[0];
+  let publicImageUrl = "";
+
+  if (file) {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user_id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadRes = await fetch(`${BASE_URL}/storage/v1/object/${filePath}`, {
+      method: "POST",
+      headers: {
+        apikey: APIKEY,
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: formData,
+    });
+
+    if (!uploadRes.ok) {
+      alert("Error al subir la imagen");
+      return;
+    }
+
+    publicImageUrl = `${BASE_URL}/storage/v1/object/public/${filePath}`;
+  }
+
+  // Datos del usuario
+  const userData = {
+    user_id: result.user.id,
+    name: name.value,
+    userName: userName.value,
+    email: email.value,
+    image: publicImageUrl,
+  };
+
+  await saveUsers(userData, access_token);
 
   window.location.href = "/dashboard.html";
 }
@@ -122,7 +154,7 @@ export async function isUserLogged(access_token, user_id) {
     method: "GET",
     headers: {
       apikey: APIKEY,
-      "Content-Type": "application.json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
   };
@@ -148,24 +180,26 @@ export function getToken() {
 }
 
 // GUARDAR USUARIOS EN SUPABASE
-async function saveUsers() {
+async function saveUsers(userData, access_token) {
   const requestOptions = {
     method: "POST",
     headers: {
       apikey: APIKEY,
-      Authorization: `Bearer${result.access_token}`,
+      Authorization: `Bearer${access_token}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(userData),
   };
-  await fetch(`${BASE_URL}/rest/v1/Users`, requestOptions);
 
-  body: JSON.stringify({
-    user_id: result.user.id,
-    name: name.value,
-    userName: userName.value,
-    email: email.value,
-    password: password.value,
-    password2: password2.value,
-    image: image.value,
-  });
+  const response = await fetch(`${BASE_URL}/rest/v1/Users`, requestOptions);
+  if (!response.ok) {
+    alert("Error al guardar los datos del usuario en la base de datos");
+    return;
+  }
+
+  const result = await response.json();
+  console.log(
+    "Datos del usuario correctamente guardados en la base de datos",
+    result
+  );
 }

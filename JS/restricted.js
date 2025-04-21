@@ -14,6 +14,7 @@ async function checkUser() {
 
   if (!isLogged) {
     logout();
+    window.location.href = "index.html";
   }
 }
 
