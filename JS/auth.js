@@ -8,7 +8,7 @@ const password2 = document.getElementById("password2");
 const image = document.getElementById("image");
 const alertPass = document.getElementById("passwordNot");
 
-// REGISTRARSE
+// REGISTRO
 const btnRegistro = document.getElementById("btnRegistro");
 if (btnRegistro) {
   btnRegistro.addEventListener("click", register);
@@ -53,8 +53,7 @@ async function register() {
   }
 
   localStorage.setItem("token", access_token);
-  localStorage.setItem("user_id", user_id);
-  localStorage.setItem("usuarioRegistrado", JSON.stringify(userData));
+  localStorage.setItem("user_id", result.user?.id);
 
   // Subimos la imagen al bucket de Supabase
   const file = image.files[0];
@@ -68,21 +67,24 @@ async function register() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const uploadRes = await fetch(`${BASE_URL}/storage/v1/object/${filePath}`, {
-      method: "POST",
-      headers: {
-        apikey: APIKEY,
-        Authorization: `Bearer ${access_token}`,
-      },
-      body: formData,
-    });
+    const uploadRes = await fetch(
+      `${BASE_URL}/storage/v1/object/avatars/${filePath}`,
+      {
+        method: "POST",
+        headers: {
+          apikey: APIKEY,
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: formData,
+      }
+    );
 
     if (!uploadRes.ok) {
       alert("Error al subir la imagen");
       return;
     }
 
-    publicImageUrl = `${BASE_URL}/storage/v1/object/public/${filePath}`;
+    publicImageUrl = `${BASE_URL}/storage/v1/object/public/avatars/${fileName}`;
   }
 
   // Datos del usuario
@@ -95,6 +97,8 @@ async function register() {
   };
 
   await saveUsers(userData, access_token);
+
+  localStorage.setItem("usuarioRegistrado", JSON.stringify(userData));
 
   window.location.href = "/dashboard.html";
 }
@@ -185,7 +189,7 @@ async function saveUsers(userData, access_token) {
     method: "POST",
     headers: {
       apikey: APIKEY,
-      Authorization: `Bearer${access_token}`,
+      Authorization: `Bearer ${access_token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
