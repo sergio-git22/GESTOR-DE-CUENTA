@@ -21,6 +21,11 @@ async function register() {
     return;
   }
 
+  if (!email.value || !password.value || !name.value || !userName.value) {
+    alert("¡Rellena todos los campos!");
+    return;
+  }
+
   const requestOptions = {
     method: "POST",
     headers: {
@@ -30,10 +35,6 @@ async function register() {
     body: JSON.stringify({
       email: email.value,
       password: password.value,
-      password2: password2.value,
-      name: name.value,
-      userName: userName.value,
-      image: image.value,
     }),
   };
 
@@ -44,16 +45,16 @@ async function register() {
   }
 
   const result = await response.json();
-  const access_token = result.session?.access_token;
-  const user_id = result.user?.id;
+  console.log(result);
+  // const access_token = result.access_token;
+  // const user_id = result.id;
 
-  if (!access_token || !user_id) {
-    alert("No se pudo obtener el token o el ID del usuario");
-    return;
-  }
-
-  localStorage.setItem("token", access_token);
-  localStorage.setItem("user_id", result.user?.id);
+  // if (!access_token || !user_id) {
+  // alert("No se pudo obtener el token o el ID del usuario");
+  // return;
+  // }
+  localStorage.setItem("token", result.access_token);
+  localStorage.setItem("user_id", result.user.id);
 
   // Subimos la imagen al bucket de Supabase
   const file = image.files[0];
